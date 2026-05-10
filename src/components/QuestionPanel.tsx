@@ -9,7 +9,12 @@ interface QuestionPanelProps {
   onSubmit: (query: string, options?: { source?: 'mock' | 'ai' }) => void;
 }
 
-function QuestionPanel({ query, status, onQueryChange, onSubmit }: QuestionPanelProps) {
+function QuestionPanel({
+  query,
+  status,
+  onQueryChange,
+  onSubmit,
+}: QuestionPanelProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onSubmit(query);
@@ -21,8 +26,8 @@ function QuestionPanel({ query, status, onQueryChange, onSubmit }: QuestionPanel
         <span className="panel-kicker">Question</span>
         <h2>질문 또는 키워드</h2>
         <p>
-          발표 중에는 예시 질문을 누르면 즉시 안정적인 mock graph가 표시됩니다. AI 생성은
-          임시 OpenAI API 키가 있을 때만 동작합니다.
+          예시 질문을 누르면 안정적인 mock graph가 표시됩니다. AI 생성은 OpenAI
+          API 키가 있을 때만 동작합니다.
         </p>
       </div>
 
@@ -51,6 +56,10 @@ function QuestionPanel({ query, status, onQueryChange, onSubmit }: QuestionPanel
         </div>
       </form>
 
+      <div className="status-box" role="status">
+        {status}
+      </div>
+
       <div className="examples">
         <span className="panel-kicker">Examples</span>
         {mockGraphs.map((graph) => (
@@ -63,10 +72,6 @@ function QuestionPanel({ query, status, onQueryChange, onSubmit }: QuestionPanel
             {graph.question}
           </button>
         ))}
-      </div>
-
-      <div className="status-box" role="status">
-        {status}
       </div>
     </aside>
   );

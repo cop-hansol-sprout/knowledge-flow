@@ -46,7 +46,9 @@ function App() {
         return;
       }
 
-      setStatus(`OpenAI 실패: ${aiResult.error ?? '응답을 그래프로 변환하지 못했습니다.'}`);
+      setStatus(
+        `OpenAI 실패: ${aiResult.error ?? '응답을 그래프로 변환하지 못했습니다.'}`,
+      );
     } else {
       setStatus('Mock graph loaded');
     }
@@ -65,10 +67,10 @@ function App() {
             <GitBranch size={16} aria-hidden="true" />
             Relationship Exploration Lab
           </div>
-          <h1>Knowledge Graph 기반 관계 탐색 실습</h1>
+          <h1>Knowledge Graph 기반 관계 탐색</h1>
           <p>
-            질문을 입력하면 핵심 개념과 관계를 그래프로 펼쳐 보고, 어떤 판단 흐름이 생기는지
-            발표용 데모로 안정적으로 확인할 수 있습니다.
+            질문을 입력하면 핵심 개념과 관계를 그래프로 펼쳐 보고, 어떤 판단
+            흐름이 생기는지 확인할 수 있습니다.
           </p>
         </div>
         <div className="hero-metrics" aria-label="현재 그래프 상태">
@@ -89,21 +91,31 @@ function App() {
           status={status}
         />
 
-        <section className="graph-stage" aria-label="관계 그래프">
-          <div className="stage-header">
-            <div>
-              <span className="panel-kicker">Graph Canvas</span>
-              <h2>{graph.title}</h2>
+        <div className="graph-and-detail">
+          <section className="graph-stage" aria-label="관계 그래프">
+            <div className="stage-header">
+              <div>
+                <span className="panel-kicker">Graph Canvas</span>
+                <h2>{graph.title}</h2>
+              </div>
+              <div className="mode-pill">
+                {mode === 'mock' ? (
+                  <Database size={15} />
+                ) : (
+                  <Sparkles size={15} />
+                )}
+                {mode === 'mock' ? 'Mock 안정 모드' : 'OpenAI 생성'}
+              </div>
             </div>
-            <div className="mode-pill">
-              {mode === 'mock' ? <Database size={15} /> : <Sparkles size={15} />}
-              {mode === 'mock' ? 'Mock 안정 모드' : 'OpenAI 생성'}
-            </div>
-          </div>
-          <GraphCanvas graph={graph} selectedItem={selectedItem} onSelect={setSelectedItem} />
-        </section>
+            <GraphCanvas
+              graph={graph}
+              selectedItem={selectedItem}
+              onSelect={setSelectedItem}
+            />
+          </section>
 
-        <DetailPanel selectedItem={selectedItem} />
+          <DetailPanel selectedItem={selectedItem} />
+        </div>
       </section>
 
       <section className="bottom-row">
@@ -117,8 +129,8 @@ function App() {
           <div>
             <h2>Demo Scope</h2>
             <p>
-              이 화면은 미리 정의된 관계 그래프와 임시 OpenAI 생성 결과를 통해 판단 흐름을
-              탐색하는 실습용 프론트엔드입니다.
+              이 화면은 미리 정의된 관계 그래프와 임시 OpenAI 생성 결과를 통해
+              판단 흐름을 탐색하는 실습용 화면입니다.
             </p>
           </div>
         </aside>

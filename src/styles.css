@@ -2,7 +2,13 @@
   color: #172033;
   background: #f5f7fb;
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -126,10 +132,18 @@ button {
 
 .workspace {
   display: grid;
-  grid-template-columns: 310px minmax(520px, 1fr) 300px;
+  grid-template-columns: 310px minmax(520px, 1fr);
   gap: 18px;
   margin-top: 18px;
   align-items: stretch;
+}
+
+.graph-and-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-self: stretch;
+  min-height: 0;
 }
 
 .question-panel,
@@ -149,8 +163,14 @@ button {
 }
 
 .question-panel {
-  max-height: 860px;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  align-self: stretch;
+  contain: size;
+  overflow: hidden;
 }
 
 .question-panel p,
@@ -234,6 +254,9 @@ button {
   display: grid;
   gap: 9px;
   margin-top: 24px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .example-button {
@@ -259,7 +282,6 @@ button {
 }
 
 .graph-stage {
-  min-height: 660px;
   overflow: hidden;
 }
 
@@ -308,10 +330,6 @@ button {
 
 .react-flow__attribution {
   display: none;
-}
-
-.detail-panel {
-  min-height: 320px;
 }
 
 .detail-panel.empty {
