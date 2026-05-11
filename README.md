@@ -71,13 +71,20 @@ npm run preview
 
 ## GitHub Pages 배포
 
-이 저장소는 GitHub Actions를 사용해 GitHub Pages로 배포하도록 설정되어 있습니다. 배포 환경에서 OpenAI 키가 필요하면 GitHub Secrets와 Variables를 사용합니다.
+이 저장소는 GitHub Actions를 사용해 GitHub Pages로 배포하도록 설정되어 있습니다. 배포 환경에서 OpenAI 또는 Atlas 키가 필요하면 GitHub Secrets와 Variables를 사용합니다.
 
 1. GitHub repository Settings → Secrets and variables → Actions로 이동합니다.
-2. Repository secret에 `OPENAI_API_KEY`를 추가합니다.
-3. 필요하면 Repository variable에 `OPENAI_MODEL`을 추가합니다. 기본값은 `gpt-4o-mini`입니다.
+2. Repository secret에 필요한 키를 추가합니다.
+   - `OPENAI_API_KEY`
+   - `ATLAS_API_KEY`
+3. Repository variable에 필요한 설정을 추가합니다.
+   - `OPENAI_MODEL`: 기본값은 `gpt-4o-mini`입니다.
+   - `ATLAS_API_BASE`: 기본값은 `https://ai-atlas.hansol.net/api/v1/public`입니다.
+   - `ATLAS_AGENT_ID`: 사용할 Atlas agent id입니다.
 4. Settings → Pages → Build and deployment에서 Source를 `GitHub Actions`로 선택합니다.
 5. `main` 브랜치에 push하면 자동으로 `dist/`를 빌드해서 Pages에 배포합니다.
+
+GitHub Pages 배포본도 브라우저에서 Atlas API를 직접 호출합니다. 따라서 사용자가 사내망 또는 VPN에서 페이지를 열어야 하고, Atlas 서버가 GitHub Pages origin의 CORS 요청을 허용해야 합니다. `ATLAS_API_KEY`는 빌드된 프론트엔드 번들에 포함되므로 내부 데모 용도로만 사용하세요.
 
 Actions workflow는 저장소 이름을 기준으로 Vite `base` path를 자동 설정합니다.
 
