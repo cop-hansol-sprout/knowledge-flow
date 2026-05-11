@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
-import { BrainCircuit, Database, GitBranch, Sparkles } from 'lucide-react';
+import { BrainCircuit, Building2, Database, GitBranch, Sparkles } from 'lucide-react';
 import DetailPanel from './components/DetailPanel';
 import GraphCanvas from './components/GraphCanvas';
 import QuestionPanel from './components/QuestionPanel';
 import ReasoningSummary from './components/ReasoningSummary';
 import { defaultGraph, findGraphByQuestion } from './data/mockGraphs';
-import { generateGraphWithOpenAI } from './services/llmGraph';
+import { generateGraphWithAtlas, generateGraphWithOpenAI } from './services/llmGraph';
 import type { KnowledgeGraph, SelectedGraphItem } from './types/graph';
+
+type GraphMode = 'mock' | 'openai' | 'atlas';
 
 function App() {
   const [query, setQuery] = useState(defaultGraph.question);
@@ -15,39 +17,54 @@ function App() {
     kind: 'node',
     item: defaultGraph.nodes[0],
   });
-  const [mode, setMode] = useState<'mock' | 'ai'>('mock');
+  const [mode, setMode] = useState<GraphMode>('mock');
   const [status, setStatus] = useState('Mock graph ready');
 
   const graphStats = useMemo(
     () => [
       { label: 'Concepts', value: graph.nodes.length },
       { label: 'Relations', value: graph.edges.length },
-      { label: 'Mode', value: mode === 'mock' ? 'Mock' : 'AI' },
+      { label: 'Mode', value: getModeLabel(mode) },
     ],
     [graph.edges.length, graph.nodes.length, mode],
   );
 
   async function handleSubmit(
     nextQuery: string,
-    options?: { source?: 'mock' | 'ai' },
+    options?: { source?: GraphMode },
   ) {
     setQuery(nextQuery);
     setSelectedItem(null);
 
-    if (options?.source === 'ai') {
+    if (options?.source === 'openai') {
       setStatus('OpenAI API로 관계 그래프를 생성하는 중입니다...');
       const aiResult = await generateGraphWithOpenAI(nextQuery);
 
       if (aiResult.graph) {
         setGraph(aiResult.graph);
-        setMode('ai');
-        setStatus('AI graph generated');
+        setMode('openai');
+        setStatus('OpenAI graph generated');
         setSelectedItem({ kind: 'node', item: aiResult.graph.nodes[0] });
         return;
       }
 
       setStatus(
         `OpenAI 실패: ${aiResult.error ?? '응답을 그래프로 변환하지 못했습니다.'}`,
+      );
+    } else if (options?.source === 'atlas') {
+      setStatus('Atlas API로 관계 그래프를 생성하는 중입니다...');
+      const atlasResult = await generateGraphWithAtlas(nextQuery);
+
+      if (atlasResult.graph) {
+        setGraph(atlasResult.graph);
+        setMode('atlas');
+        setStatus('Atlas graph generated');
+        setSelectedItem({ kind: 'node', item: atlasResult.graph.nodes[0] });
+        return;
+      }
+
+      setStatus(
+        `Atlas 실패: ${atlasResult.error ?? '응답을 그래프로 변환하지 못했습니다.'}`,
       );
     } else {
       setStatus('Mock graph loaded');
@@ -99,12 +116,10 @@ function App() {
                 <h2>{graph.title}</h2>
               </div>
               <div className="mode-pill">
-                {mode === 'mock' ? (
-                  <Database size={15} />
-                ) : (
-                  <Sparkles size={15} />
-                )}
-                {mode === 'mock' ? 'Mock 안정 모드' : 'OpenAI 생성'}
+                {mode === 'mock' && <Database size={15} />}
+                {mode === 'openai' && <Sparkles size={15} />}
+                {mode === 'atlas' && <Building2 size={15} />}
+                {getModeLabel(mode)}
               </div>
             </div>
             <GraphCanvas
@@ -137,6 +152,18 @@ function App() {
       </section>
     </main>
   );
+}
+
+function getModeLabel(mode: GraphMode): string {
+  if (mode === 'openai') {
+    return 'OpenAI 생성';
+  }
+
+  if (mode === 'atlas') {
+    return 'Atlas 생성';
+  }
+
+  return 'Mock 안정 모드';
 }
 
 export default App;

@@ -1,12 +1,12 @@
 import { FormEvent } from 'react';
-import { Bot, Search } from 'lucide-react';
+import { Bot, Building2, Search } from 'lucide-react';
 import { mockGraphs } from '../data/mockGraphs';
 
 interface QuestionPanelProps {
   query: string;
   status: string;
   onQueryChange: (query: string) => void;
-  onSubmit: (query: string, options?: { source?: 'mock' | 'ai' }) => void;
+  onSubmit: (query: string, options?: { source?: 'mock' | 'openai' | 'atlas' }) => void;
 }
 
 function QuestionPanel({
@@ -26,8 +26,8 @@ function QuestionPanel({
         <span className="panel-kicker">Question</span>
         <h2>질문 또는 키워드</h2>
         <p>
-          예시 질문을 누르면 안정적인 mock graph가 표시됩니다. AI 생성은 OpenAI
-          API 키가 있을 때만 동작합니다.
+          예시 질문을 누르면 안정적인 mock graph가 표시됩니다. OpenAI 또는 Atlas
+          API 키가 있을 때 LLM 생성도 사용할 수 있습니다.
         </p>
       </div>
 
@@ -48,10 +48,18 @@ function QuestionPanel({
           <button
             type="button"
             className="ghost-button"
-            onClick={() => onSubmit(query, { source: 'ai' })}
+            onClick={() => onSubmit(query, { source: 'openai' })}
           >
             <Bot size={16} aria-hidden="true" />
-            AI 생성
+            OpenAI 생성
+          </button>
+          <button
+            type="button"
+            className="ghost-button"
+            onClick={() => onSubmit(query, { source: 'atlas' })}
+          >
+            <Building2 size={16} aria-hidden="true" />
+            Atlas 생성
           </button>
         </div>
       </form>
